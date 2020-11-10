@@ -5,7 +5,7 @@
 
 ## Usage
 
-``` cmd
+``` 
 # 빌드
 docker build -t knw1234/mariadb:base .
 
