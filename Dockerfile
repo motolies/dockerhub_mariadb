@@ -1,5 +1,8 @@
 FROM mariadb:10.4
-MAINTAINER knw1234@gmail.com
+
+ENV MYSQL_ROOT_PASSWORD root
+EXPOSE 3306
 
 ADD my.cnf /etc/mysql/my.cnf
+
 
