@@ -23,25 +23,11 @@ docker buildx build --platform linux/amd64,linux/arm64 -t knw1234/mariadb -t knw
 
 ```
 # 빌드
-docker build -t knw1234/mariadb:base .
+docker build -t knw1234/mariadb -t knw1234/mariadb:{특정버전} .
 
 # 빌드 후 테스트(--restart=unless-stopped 재부팅시도 다시 시작)
-docker run -d --restart=unless-stopped -p 13306:3306 -e MYSQL_ROOT_PASSWORD=root --name mydb knw1234/mariadb:base
+docker run -d --restart=unless-stopped -p 13306:3306 -e MYSQL_ROOT_PASSWORD=root --name mydb knw1234/mariadb
 
-# 이미지 푸쉬
-docker push knw1234/mariadb:latest
-docker push knw1234/mariadb:{특정버전}
-
-
-
-
-# 이거 말고 위에껄로 해보자
-# 태그 변경 후 푸쉬
-docker tag knw1234/mariadb:base knw1234/mariadb:{특정버전}
-docker push knw1234/mariadb:{특정버전}
-
-# 태그 변경 후 푸쉬(latest)
-docker tag knw1234/mariadb:base knw1234/mariadb:latest
-docker push knw1234/mariadb:latest
-
+# 이미지 푸쉬(한번에 다 올라감, latest 및 특정버전태그)
+docker push --all-tags knw1234/mariadb
 ```
