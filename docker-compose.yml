@@ -1,10 +1,11 @@
 version: '2'
 services:
-  skyscape:
-    container_name: skyscape-db
+  mariadb:
+    container_name: mariadb
     image: knw1234/mariadb
     restart: unless-stopped
     ports:
       - "3306:3306"
     environment:
       MYSQL_ROOT_PASSWORD: 1234
+    network_mode: bridge
