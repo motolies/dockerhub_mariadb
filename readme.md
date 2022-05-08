@@ -45,10 +45,10 @@ docker push --all-tags knw1234/mariadb
 ```bash
 # 복사하기
 docker cp {hostFile} {containerName}:{containerPath}
-docker cp skyscape-2022-03-29.sql.gz skyscape-db:/root
+docker cp skyscape-2022-03-29.sql.gz mariadb:/root
 
 # 접속하기
-docker exec -it skyscape-db bash
+docker exec -it mariadb bash
 
 # 사용자 만들기
 # insert에 맞는 사용자를 만들어야 하며, 아래에 기술
