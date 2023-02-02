@@ -2,6 +2,17 @@
 
 내 마음대로 수정한 mariadb
 
+## base image tag
+```shell
+#build-arg 사용해서 베이스 이미지 버전을 변경할 수 있도록 수정했다.
+export MARIADB_VERSION=10.7
+docker build -t knw1234/mariadb -t knw1234/mariadb:${MARIADB_VERSION} --build-arg MARIADB_VERSION=${MARIADB_VERSION} .
+```
+
+
+---
+# 이전에 수동으로 빌드한 내용
+
 ## Docker Buildx Usage
 
 ```

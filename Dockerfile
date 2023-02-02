@@ -1,8 +1,9 @@
-FROM mariadb:10.6
+ARG MARIADB_VERSION=latest
+FROM mariadb:${MARIADB_VERSION}
 
-ENV MYSQL_ROOT_PASSWORD root
-EXPOSE 3306
+RUN echo "mariadb image tag is ${MARIADB_VERSION}"
 
-ADD my.cnf /etc/mysql/my.cnf
+ADD ./my.cnf /etc/mysql/my.cnf
+ENV MARIADB_VERSION ${MARIADB_VERSION}
 
 
