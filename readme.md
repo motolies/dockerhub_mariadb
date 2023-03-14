@@ -10,6 +10,35 @@ docker build -t knw1234/mariadb -t knw1234/mariadb:${MARIADB_VERSION} --build-ar
 ```
 
 
+
+---
+# 파일 복사해서 복구하기
+## 사용자 만들기
+
+```sql
+# 사용자 만들기
+CREATE USER 'skyscape'@'%' IDENTIFIED BY 'skyscape';
+
+# 모든 권한 주기(프로덕션 환경에서는 안됩니다...)
+GRANT ALTER, SHOW VIEW, SHOW DATABASES, SELECT, PROCESS, EXECUTE, ALTER ROUTINE, CREATE, CREATE ROUTINE, CREATE TABLESPACE, CREATE TEMPORARY TABLES, CREATE VIEW, DELETE, DROP, EVENT, INDEX, INSERT, REFERENCES, TRIGGER, UPDATE, BINLOG ADMIN, BINLOG REPLAY, CONNECTION ADMIN, CREATE USER, FEDERATED ADMIN, FILE, LOCK TABLES, READ_ONLY ADMIN, RELOAD, REPLICATION MASTER ADMIN, REPLICATION SLAVE, REPLICATION SLAVE ADMIN, SET USER, SHUTDOWN, SUPER  ON *.* TO 'skyscape'@'%' WITH GRANT OPTION;
+
+# 갱신 및 권한 확인
+FLUSH PRIVILEGES;
+SHOW GRANTS FOR 'skyscape'@'%';
+```
+
+## Creating database dump
+
+```shell
+docker exec mariadb /bin/bash -c 'mysqldump --single-transaction --hex-blob --routines --databases skyscape -uroot -proot' | gzip > /volume1/docker/blog/db_bak/skyscape-$(date +"%Y-%m-%d").sql.gz
+```
+
+## Restoring data from dump files
+
+```shell
+gunzip < skyscape-2023-03-14.sql.gz | docker exec -i mariadb sh -c 'exec mariadb -uroot -proot --max_allowed_packet=64M' 
+```
+
 ---
 # 이전에 수동으로 빌드한 내용
 
@@ -43,45 +72,3 @@ docker run -d --restart=unless-stopped -p 13306:3306 -e MYSQL_ROOT_PASSWORD=root
 docker push --all-tags knw1234/mariadb
 ```
 
----
-
-<br>
-
-# 파일 복사해서 복구하기
-
-<br>
-
-## shell 작업
-
-```bash
-# 복사하기
-docker cp {hostFile} {containerName}:{containerPath}
-docker cp skyscape-2022-03-29.sql.gz mariadb:/root
-
-# 접속하기
-docker exec -it mariadb bash
-
-# 사용자 만들기
-# insert에 맞는 사용자를 만들어야 하며, 아래에 기술
-
-
-# 디비 복구하기
-gunzip < skyscape-2022-03-29.sql.gz | mysql -uroot -p --max_allowed_packet=64M
-
-```
-
-<br>
-
-## 사용자 만들기
-
-```sql
-# 사용자 만들기
-CREATE USER 'skyscape'@'%' IDENTIFIED BY 'skyscape';
-
-# 모든 권한 주기(프로덕션 환경에서는 안됩니다...)
-GRANT ALTER, SHOW VIEW, SHOW DATABASES, SELECT, PROCESS, EXECUTE, ALTER ROUTINE, CREATE, CREATE ROUTINE, CREATE TABLESPACE, CREATE TEMPORARY TABLES, CREATE VIEW, DELETE, DROP, EVENT, INDEX, INSERT, REFERENCES, TRIGGER, UPDATE, BINLOG ADMIN, BINLOG REPLAY, CONNECTION ADMIN, CREATE USER, FEDERATED ADMIN, FILE, LOCK TABLES, READ_ONLY ADMIN, RELOAD, REPLICATION MASTER ADMIN, REPLICATION SLAVE, REPLICATION SLAVE ADMIN, SET USER, SHUTDOWN, SUPER  ON *.* TO 'skyscape'@'%' WITH GRANT OPTION;
-
-# 갱신 및 권한 확인
-FLUSH PRIVILEGES;
-SHOW GRANTS FOR 'skyscape'@'%';
-```
